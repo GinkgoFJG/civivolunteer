@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | CiviCRM version 4.3                                                |
@@ -30,70 +29,39 @@
  * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
- * @subpackage API_Need
+ * @subpackage API_Project
  * @copyright CiviCRM LLC (c) 2004-2013
  */
 
-
 /**
- * Create or update a need
+ * Project.create API
  *
- * @param array $params  Associative array of property
- *                       name/value pairs to insert in new 'need'
- * @example NeedCreate.php Std Create example
- *
- * @return array api result array
- * {@getfields need_create}
- * @access public
+ * @param array $params
+ * @return array API result descriptor
+ * @throws API_Exception
  */
-function civicrm_api3_need_create($params) {
+function civicrm_api3_project_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action
+ * Project.delete API
  *
- * The metadata is used for setting defaults, documentation & validation
- * @param array $params array or parameters determined by getfields
+ * @param array $params
+ * @return array API result descriptor
+ * @throws API_Exception
  */
-function _civicrm_api3_need_create_spec(&$params) {
-  $params['project_id']['api.required'] = 1;
-  $params['is_flexible']['api.required'] = 1;
-  $params['is_active']['api.required'] = 1; /* TODO: this probably shouldn't be required */
-}
-
-/**
- * Returns array of needs  matching a set of one or more group properties
- *
- * @param array $params  (referance) Array of one or more valid
- *                       property_name=>value pairs. If $params is set
- *                       as null, all needs will be returned
- *
- * @return array  (referance) Array of matching needs
- * {@getfields need_get}
- * @access public
- */
-function civicrm_api3_need_get($params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
-}
-function _civicrm_api3_need_get_spec(&$params) {
-    $params['project_id']['api.required'] = 1;
-}
-/**
- * delete an existing need
- *
- * This method is used to delete any existing need. id of the group
- * to be deleted is required field in $params array
- *
- * @param array $params  (reference) array containing id of the group
- *                       to be deleted
- *
- * @return array  (referance) returns flag true if successfull, error
- *                message otherwise
- * {@getfields need_delete}
- * @access public
- */
-function civicrm_api3_need_delete($params) {
+function civicrm_api3_project_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
+/**
+ * Project.get API
+ *
+ * @param array $params
+ * @return array API result descriptor
+ * @throws API_Exception
+ */
+function civicrm_api3_project_get($params) {
+  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+}
