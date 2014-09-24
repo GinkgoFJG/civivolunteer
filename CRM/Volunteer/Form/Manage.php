@@ -76,6 +76,7 @@ class CRM_Volunteer_Form_Manage {
       ),
       'volunteer' => array(
         'default_date' => CRM_Utils_Array::value('start_date', $entity),
+        'custom_search_id' => CRM_Volunteer_Form_Search_Volunteer::getCustomSearchId(),
       ),
       'config' => array(
         'timeInputFormat' => $config->timeInputFormat,

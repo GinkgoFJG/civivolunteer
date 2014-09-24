@@ -86,7 +86,15 @@
       events: {
         'change [name=add-volunteer]': 'addNewContact',
         'click .crm-vol-menu-item a': 'moveContact',
-        'click .crm-vol-del': 'removeContact'
+        'click .crm-vol-del': 'removeContact',
+        'click .crm-vol-search': function () {
+          var url_args = {
+            csid: CRM.volunteer.custom_search_id,
+            force: 1
+          };
+          var url = CRM.url('civicrm/contact/search/custom', url_args);
+          CRM.loadForm(url);
+        }
       },
 
       onAfterItemAdded: function() { this.doCount(); },
