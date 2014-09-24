@@ -4,8 +4,32 @@
  * A custom contact search
  */
 class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
+
+  /**
+   * The custom search ID, which is really the value of an OptionValue
+   * in the special custom_search OptionGroup.
+   *
+   * @var Int
+   */
+  private static $customSearchId;
+
   function __construct(&$formValues) {
     parent::__construct($formValues);
+  }
+
+  /**
+   * Returns the custom search ID, retrieving it from database if necessary.
+   *
+   * @return Int
+   */
+  public static function getCustomSearchId() {
+    if (is_null(self::$customSearchId)) {
+      self::$customSearchId = (int) civicrm_api3('CustomSearch', 'getvalue', array(
+        'name' => "CRM_Volunteer_Form_Search_Volunteer",
+        'return' => "value",
+      ));
+    }
+    return self::$customSearchId;
   }
 
   /**
