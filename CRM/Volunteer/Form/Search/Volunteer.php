@@ -39,20 +39,28 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
    * @return void
    */
   function buildForm(&$form) {
-    CRM_Utils_System::setTitle(ts('My Search Title'));
+    $templateElements = array('state_province_id');
+    CRM_Utils_System::setTitle(ts('Find Volunteer Candidates'));
 
-    $form->add('text',
-      'household_name',
-      ts('Household Name'),
-      TRUE
-    );
+    $apiResult = civicrm_api3('CustomGroup', 'getsingle', array(
+      'extends' => 'Individual',
+      'name' => 'Volunteer_Information',
+      'api.customField.get' => array(
+        'is_active' => 1,
+        'is_searchable' => 1,
+      ),
+    ));
+    $custom_fields = $apiResult['api.customField.get']['values'];
+    foreach ($custom_fields as $field) {
+      $templateElements[] = $field['name'];
+      $this->addCustomField($field, $form);
+    }
 
     $stateProvince = array('' => ts('- any state/province -')) + CRM_Core_PseudoConstant::stateProvince();
     $form->addElement('select', 'state_province_id', ts('State/Province'), $stateProvince);
 
     // Optionally define default search values
     $form->setDefaults(array(
-      'household_name' => '',
       'state_province_id' => NULL,
     ));
 
@@ -60,22 +68,7 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
      * if you are using the standard template, this array tells the template what elements
      * are part of the search criteria
      */
-    $form->assign('elements', array('household_name', 'state_province_id'));
-  }
-
-  /**
-   * Get a list of summary data points
-   *
-   * @return mixed; NULL or array with keys:
-   *  - summary: string
-   *  - total: numeric
-   */
-  function summary() {
-    return NULL;
-    // return array(
-    //   'summary' => 'This is a summary',
-    //   'total' => 50.0,
-    // );
+    $form->assign('elements', $templateElements);
   }
 
   /**
@@ -149,21 +142,10 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
    */
   function where($includeContactIDs = FALSE) {
     $params = array();
-    $where = "contact_a.contact_type   = 'Household'";
+    $where = '1';
 
     $count  = 1;
     $clause = array();
-    $name   = CRM_Utils_Array::value('household_name',
-      $this->_formValues
-    );
-    if ($name != NULL) {
-      if (strpos($name, '%') === FALSE) {
-        $name = "%{$name}%";
-      }
-      $params[$count] = array($name, 'String');
-      $clause[] = "contact_a.household_name LIKE %{$count}";
-      $count++;
-    }
 
     $state = CRM_Utils_Array::value('state_province_id',
       $this->_formValues
@@ -202,6 +184,39 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
    * @return void
    */
   function alterRow(&$row) {
-    $row['sort_name'] .= ' ( altered )';
+//    $row['sort_name'] .= ' ( altered )';
+  }
+
+  /**
+   * This is a quick and dirty placeholder. There *must* be a better way to do this
+   *
+   * @param array $field The values part of the result for api.customField.get
+   * @param CRM_Core_Form $form modifiable
+   */
+  private function addCustomField($field, &$form) {
+    $type = strtolower($field['html_type']);
+
+    switch ($type) {
+      case 'multi-select':
+        $options = $this->buildOptionsList($field['option_group_id']);
+        $form->addElement('select', $field['name'], $field['label'], $options);
+        break;
+      default:
+        $form->add($type,
+          $field['name'],
+          $field['label']
+        );
+    }
+  }
+
+  private function buildOptionsList($optionGroupID) {
+    $options = array();
+    $apiResult = civicrm_api3('OptionValue', 'get', array(
+      'option_group_id' => $optionGroupID,
+    ));
+    foreach ($apiResult['values'] as $id => $data) {
+      $options[$data['value']] = $data['label'];
+    }
+    return $options;
   }
 }
