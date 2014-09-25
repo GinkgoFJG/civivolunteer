@@ -86,11 +86,13 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
   function &columns() {
     // return by reference
     $columns = array(
-      ts('Contact Id') => 'contact_id',
-      ts('Contact Type') => 'contact_type',
-      ts('Name') => 'sort_name',
-      ts('State') => 'state_province',
+      ts('Name', array('domain' => 'org.civicrm.volunteer')) => 'sort_name',
+      ts('Email', array('domain' => 'org.civicrm.volunteer')) => 'email',
+      ts('Phone', array('domain' => 'org.civicrm.volunteer')) => 'phone',
+      ts('City', array('domain' => 'org.civicrm.volunteer')) => 'city',
+      ts('State', array('domain' => 'org.civicrm.volunteer')) => 'state_province',
     );
+    CRM_Volunteer_Hook::searchColumns(__CLASS__, $columns);
     return $columns;
   }
 
