@@ -13,8 +13,40 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
    */
   private static $customSearchId;
 
+  /**
+   * The ID of the Volunteer Need from which this search was initiated.
+   *
+   * @var string
+   */
+  private $volNeedId;
+
+  /**
+   * The ID of the Volunteer Project from which this search was initiated.
+   *
+   * @var string
+   */
+  private $volProjectId;
+
   function __construct(&$formValues) {
     parent::__construct($formValues);
+
+    $this->volNeedId = $this->_getParam('vol_need');
+    $this->volProjectId = $this->_getParam('vol_project');
+  }
+
+  /**
+   * Helper function to get the value of params passed through the URL
+   *
+   * Since params may not be preserved in the URL on the second or third form
+   * submission, we also check the value of hidden fields in the form.
+   *
+   * @param string $name
+   * @param string $type See CRM_Utils_Type::validate() for acceptable values
+   * @return string
+   */
+  private function _getParam($name, $type = 'Int') {
+    $requestValue = CRM_Utils_Request::retrieve($name, $type);
+    return ($requestValue ? $requestValue : CRM_Utils_Array::value($name, $this->_formValues));
   }
 
   /**
@@ -33,9 +65,26 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
   }
 
   /**
+   * Create a task list based on the open needs of the volunteer project.
+   *
+   * @param CRM_Core_Form_Search $form
+   * @return array
+   */
+  function buildTaskList(CRM_Core_Form_Search $form) {
+    $tasks = array();
+
+    $project = CRM_Volunteer_BAO_Project::retrieveByID($this->volProjectId);
+    foreach ($project->open_needs as $need_id => $data) {
+      $tasks[VOL_TASK_ASSIGN . "[$need_id]"] = ts('Assign to Volunteer Need: %1 (%2)', array(1 => $data['role_label'], 2=> $data['label'], 'domain' => 'org.civicrm.volunteer'));
+    }
+
+    return $tasks;
+  }
+
+  /**
    * Prepare a set of search fields
    *
-   * @param CRM_Core_Form $form modifiable
+   * @param CRM_Core_Form_Search $form modifiable
    * @return void
    */
   function buildForm(&$form) {
@@ -58,6 +107,9 @@ class CRM_Volunteer_Form_Search_Volunteer extends CRM_Contact_Form_Search_Custom
 
     $stateProvince = array('' => ts('- any state/province -')) + CRM_Core_PseudoConstant::stateProvince();
     $form->addElement('select', 'state_province_id', ts('State/Province'), $stateProvince);
+
+    $form->add('hidden', 'vol_need', $this->volNeedId);
+    $form->add('hidden', 'vol_project', $this->volProjectId);
 
     // Optionally define default search values
     $form->setDefaults(array(

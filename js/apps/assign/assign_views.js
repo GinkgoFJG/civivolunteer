@@ -90,7 +90,9 @@
         'click .crm-vol-search': function () {
           var url_args = {
             csid: CRM.volunteer.custom_search_id,
-            force: 1
+            reset: 1,
+            vol_need: this.model.get('id'),
+            vol_project: CRM.volunteerApp.project_id
           };
           var url = CRM.url('civicrm/contact/search/custom', url_args);
           CRM.loadForm(url);

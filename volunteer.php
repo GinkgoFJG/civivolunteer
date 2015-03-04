@@ -24,10 +24,10 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
  */
-
-
 require_once 'volunteer.civix.php';
 require_once 'volunteer.slider.php';
+
+define('VOL_TASK_ASSIGN', 'VOL_TASK_ASSIGN');
 
 /**
  * Implementation of hook_civicrm_config
