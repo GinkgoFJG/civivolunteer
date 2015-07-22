@@ -76,8 +76,9 @@ function volunteer_civicrm_tabset($tabsetName, &$tabs, $context) {
   if ($tabsetName == 'civicrm/event/manage') {
     if (!empty($context)) {
       $eventID = $context['event_id'];
-      $url = CRM_Utils_System::url( 'civicrm/event/manage/volunteer',
-        "reset=1&snippet=5&force=1&id=$eventID&action=update&component=event" );
+      $url = CRM_Utils_System::url( 'civicrm/a',
+        "reset=1&snippet=5&force=1&id=$eventID&action=update&component=event&route=/example"
+      );
 
       $tab['volunteer'] = array(
         'title' => ts('Volunteers', array('domain' => 'org.civicrm.volunteer')),
@@ -97,7 +98,7 @@ function volunteer_civicrm_tabset($tabsetName, &$tabs, $context) {
     else {
       $tab['volunteer'] = array(
         'title' => ts('Volunteers', array('domain' => 'org.civicrm.volunteer')),
-        'url'   => 'civicrm/event/manage/volunteer',
+        'url'   => $url,
         'field' => 'is_volunteer',
       );
     }
