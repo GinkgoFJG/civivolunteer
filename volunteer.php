@@ -74,11 +74,11 @@ function volunteer_civicrm_xmlMenu(&$files) {
  */
 function volunteer_civicrm_tabset($tabsetName, &$tabs, $context) {
   if ($tabsetName == 'civicrm/event/manage') {
+    $url = 'civicrm/a/#/example';
+
     if (!empty($context)) {
       $eventID = $context['event_id'];
-      $url = CRM_Utils_System::url( 'civicrm/a',
-        "reset=1&snippet=5&force=1&id=$eventID&action=update&component=event&route=/example"
-      );
+      # $url .= "/{$eventID}";
 
       $tab['volunteer'] = array(
         'title' => ts('Volunteers', array('domain' => 'org.civicrm.volunteer')),
