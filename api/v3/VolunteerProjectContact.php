@@ -101,6 +101,76 @@ function civicrm_api3_volunteer_project_contact_get($params) {
 }
 
 /**
+ * Adjust Metadata for Getclassroom action
+ *
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
+ */
+function _civicrm_api3_volunteer_project_contact_getclassroom_spec(&$params) {
+  $params['project_id']['api.required'] = 1;
+}
+
+/**
+ * Ugly, dirty hack for SIFMA. Expects project_id.
+ */
+function civicrm_api3_volunteer_project_contact_getclassroom($params) {
+  $customFields = array(
+    'gender' => array(
+      'label' => 'Gender Composition',
+      'name' => 'custom_30',
+      'hasOptions' => TRUE,
+    ),
+    'race' => array(
+      'label' => 'Racial/Ethnic Composition',
+      'name' => 'custom_31',
+      'hasOptions' => TRUE,
+    ),
+    'students' => array(
+      'label' => 'Number of Students',
+      'name' => 'custom_32',
+      'hasOptions' => FALSE,
+    ),
+    'format' => array(
+      'label' => 'Classroom Format',
+      'name' => 'custom_33',
+      'hasOptions' => TRUE,
+    ),
+  );
+
+  $fieldsToReturn = array();
+  foreach ($customFields as $key => $data) {
+    $fieldsToReturn[] = $data['name'];
+    if ($data['hasOptions']) {
+      $api = civicrm_api3('Contact', 'getoptions', array(
+        'field' => $data['name'],
+      ));
+      $customFields[$key]['values'] = $api['values'];
+    }
+  }
+
+  $params['api.Contact.get'] = array(
+    'return' => implode(',', $fieldsToReturn),
+  );
+  $params['relationship_type_id'] = 'classroom';
+  $params['sequential'] = 1;
+
+  $result = civicrm_api3('VolunteerProjectContact', 'get', $params);
+  if (!empty($result['values'][0]) && !empty($result['values'][0]['api.Contact.get']['values'])) {
+    $classroom = $result['values'][0]['api.Contact.get']['values'][0];
+
+    foreach($customFields as $key => $data) {
+      if ($data['hasOptions']) {
+        $customFields[$key]['value'] = @$data['values'][$classroom[$data['name']]];
+      } else {
+        $customFields[$key]['value'] = $classroom[$data['name']];
+      }
+    }
+  }
+
+  return $customFields;
+}
+
+/**
  * Delete an existing project contact
  *
  * This method is used to delete the relationship(s) between a contact and a

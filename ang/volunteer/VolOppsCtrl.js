@@ -32,7 +32,7 @@
     });
   });
 
-  angular.module('volunteer').controller('VolOppsCtrl', function ($route, $scope, $window, crmStatus, crmUiHelp, volOppSearch, countries) {
+  angular.module('volunteer').controller('VolOppsCtrl', function ($route, $scope, $window, crmStatus, crmApi, crmUiHelp, volOppSearch, countries) {
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'ang/VolOppsCtrl'}); // See: templates/ang/VolOppsCtrl.hlp
@@ -117,7 +117,19 @@
       if (!_.isEmpty(addressBlock)) {
         addressBlock = '<p><strong>Location:</strong><br />' + addressBlock + '</p>';
       }
-      CRM.alert(description + campaignBlock + addressBlock, project.title, 'info', {expires: 0});
+
+      crmApi('VolunteerProjectContact', 'getclassroom', {
+        project_id: project.id
+      }).then(function(result) {
+        var classroomBlock = '<strong>Classroom Details:</strong><br />';
+
+        angular.forEach(result, function(value, key) {
+          classroomBlock += value.label + ': ' + value.value + '<br />';
+        });
+        classroomBlock = '<p>' + classroomBlock + '</p>';
+
+        CRM.alert(description + campaignBlock + classroomBlock + addressBlock, project.title, 'info', {expires: 0});
+      });
     };
 
     $scope.showRoleDescription = function (need) {
