@@ -115,6 +115,11 @@ function _civicrm_api3_volunteer_project_contact_getclassroom_spec(&$params) {
  */
 function civicrm_api3_volunteer_project_contact_getclassroom($params) {
   $customFields = array(
+    'grade' => array(
+      'label' => 'Grade Level',
+      'name' => 'custom_36',
+      'hasOptions' => FALSE,
+    ),
     'gender' => array(
       'label' => 'Gender Composition',
       'name' => 'custom_30',
