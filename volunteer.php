@@ -505,12 +505,21 @@ function _isVolListingApiCall($entity, $action) {
     'get',
     'getsingle',
     'locations',
+    'getcountries',
     'getperms',
     //These should be removed wen permissions are refactored
     'loadbackbone',
     //'create'
   );
-  $entities = array('loc_block', 'volunteer_project_contact', 'volunteer_need', 'volunteer_project', 'volunteer_util');
+  $entities = array(
+    'address',
+    'loc_block',
+    'volunteer_project_contact',
+    'volunteer_need',
+    'volunteer_project',
+    'volunteer_util',
+    'campaign'
+  );
 
   return (in_array($entity, $entities) && in_array($action, $actions));
 }
