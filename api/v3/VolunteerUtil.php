@@ -109,3 +109,36 @@ function civicrm_api3_volunteer_util_getperms($params) {
 
   return civicrm_api3_create_success($results, "VolunteerUtil", "getperms", $params);
 }
+
+/**
+ * This function returns the enabled countries in CiviCRM.
+ *
+ * Its placement here is a hack for SIFMA-41. Addressing data requirements for
+ * Angular UIs deserves a more thoughtful and holistic approach.
+ *
+ * @param array $params
+ *   Not presently used.
+ * @return array
+ */
+function civicrm_api3_volunteer_util_getcountries($params) {
+  $settings = civicrm_api3('Setting', 'get', array(
+    "return" => array("countryLimit", "defaultContactCountry"),
+    "sequential" => 1,
+  ));
+
+  $countries = civicrm_api3('Country', 'get', array(
+    "id" => array(
+      "IN" => $settings['values'][0]['countryLimit'],
+    ),
+  ));
+
+  $results = $countries['values'];
+  foreach($results as $k => $country) {
+    // since we are wrapping CiviCRM's API, and it provides even boolean data
+    // as quoted strings, we'll do the same
+    $results[$k]['is_default'] =
+      ($country['id'] === $settings['values'][0]['defaultContactCountry']) ? "1" : "0";
+  }
+
+  return civicrm_api3_create_success($results, "VolunteerUtil", "getcountries", $params);
+}
