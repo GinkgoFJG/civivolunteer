@@ -305,7 +305,7 @@
       saveProject().then(function(projectId) {
         if (projectId) {
           crmUiAlert({text: ts('Changes saved successfully'), title: ts('Saved'), type: 'success'});
-          $location.path( "/volunteer/manage" );
+          $location.path( "/volunteer/manage/0" );
         }
       });
     };
@@ -317,14 +317,14 @@
 
           volBackbone.load().then(function() {
             CRM.volunteerPopup(ts('Define Needs'), 'Define', projectId);
-            $location.path( "/volunteer/manage" );
+            $location.path( "/volunteer/manage/0" );
           });
         }
       });
     };
 
     $scope.cancel = function() {
-      $location.path( "/volunteer/manage" );
+      $location.path( "/volunteer/manage/0" );
     };
   });
 
