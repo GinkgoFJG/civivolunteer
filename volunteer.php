@@ -476,6 +476,9 @@ function volunteer_civicrm_alterAPIPermissions($entity, $action, &$params, &$per
   $permissions['volunteer_commendation']['default'] = array('access CiviCRM', 'create volunteer projects');
   $permissions['volunteer_project']['default'] = array('create volunteer projects');
 
+  // SIFMA hack
+  $permissions['volunteer_project_contact']['getclassroom'] = array('register to volunteer');
+
   //Initial Hacks
   $permissions['uf_join']['create'] = array('access CiviCRM', 'create volunteer projects');
   $permissions['uf_join']['update'] = array('access CiviCRM', 'create volunteer projects');
