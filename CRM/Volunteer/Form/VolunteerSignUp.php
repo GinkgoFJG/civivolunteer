@@ -266,15 +266,16 @@ class CRM_Volunteer_Form_VolunteerSignUp extends CRM_Core_Form {
         'valueName' => 'volunteer_registration',
       );
 
-      $bcc = array();
+      // Hack for SIFMA: Hardcoding in Michelle's address and using CC instead of BCC
+      $cc = array('Noguchi, Michelle <mnoguchi@sifma.org>');
       foreach ($tplParams as $data) {
         foreach ($data['contacts'] as $manager) {
-          $bcc[$manager['contact_id']] = "{$manager['display_name']} <{$manager['email']}>";
+          $cc[$manager['contact_id']] = "{$manager['display_name']} <{$manager['email']}>";
         }
       }
 
-      if (count($bcc)) {
-        $sendTemplateParams['bcc'] = implode(', ', $bcc);
+      if (count($cc)) {
+        $sendTemplateParams['cc'] = implode(', ', $cc);
       }
 
       CRM_Core_BAO_MessageTemplate::sendTemplate($sendTemplateParams);
