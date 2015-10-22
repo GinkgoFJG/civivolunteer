@@ -5,6 +5,11 @@
         controller: 'VolunteerProject',
         templateUrl: '~/volunteer/Project.html',
         resolve: {
+          countries: function(crmApi) {
+            return crmApi('VolunteerUtil', 'getcountries', {}).then(function(result) {
+              return result.values;
+            });
+          },
           project: function(crmApi, $route) {
             if ($route.current.params.projectId == 0) {
               return {
@@ -79,7 +84,7 @@
   );
 
 
-  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, crmApi, crmStatus, crmUiAlert, crmUiHelp, crmProfiles, project, is_entity, profile_status, relationship_types, relationship_data, profiles, location_blocks, phone_types, volBackbone) {
+  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, crmApi, crmStatus, crmUiAlert, crmUiHelp, crmProfiles, countries, project, is_entity, profile_status, relationship_types, relationship_data, profiles, location_blocks, phone_types, volBackbone) {
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'CRM/Volunteer/Form/Volunteer'}); // See: templates/CRM/volunteer/Project.hlp
@@ -100,6 +105,7 @@
     }
 
 
+    $scope.countries = countries;
     $scope.locationBlocks = location_blocks.values;
     $scope.locationBlocks[0] = "Create a new Location";
     $scope.locBlock = {};
@@ -134,7 +140,12 @@
 
     $scope.locBlockChanged = function() {
       if($scope.project.loc_block_id == 0) {
-        $scope.locBlock = {};
+        $scope.locBlock = {
+          address: {
+            country: _.findWhere(countries, {is_default: "1"}).id
+          }
+        };
+
         $("#crm-vol-location-block .crm-accordion-body").slideDown({complete: function() {
           $("#crm-vol-location-block .crm-accordion-wrapper").removeClass("collapsed");
         }});
