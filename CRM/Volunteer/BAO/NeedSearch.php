@@ -122,7 +122,8 @@ class CRM_Volunteer_BAO_NeedSearch {
       return $needStartTime < $searchEndTime;
     }
 
-    // The need does not have fuzzy dates. We need to verify only that the need
+    // The need does not have fuzzy dates, and both ends of the search
+    // window have been specified. We need to verify only that the need
     // starts in the search window.
     if ($needEndTime === FALSE) {
       return $needStartTime > $searchStartTime && $needStartTime < $searchEndTime;
