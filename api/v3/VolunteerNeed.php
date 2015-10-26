@@ -168,7 +168,7 @@ function _civicrm_api3_volunteer_need_getsearchresult_spec(&$params) {
  * @return array
  */
 function civicrm_api3_volunteer_need_getsearchresult($params) {
-  $result = array(CRM_Volunteer_BAO_NeedSearch::doSearch($params));
+  $result = CRM_Volunteer_BAO_NeedSearch::doSearch($params);
   return civicrm_api3_create_success($result, $params, 'VolunteerNeed', 'getsearchresult');
 }
 
