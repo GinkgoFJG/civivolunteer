@@ -54,11 +54,15 @@
           profile_status: function(crmProfiles) {
             return crmProfiles.load();
           },
-          // VOL-174
-          userCanGetContactList: function (crmApi) {
-            return crmApi('Contact', 'getlist').then(function(result) {
-              return (result.count > 1);
-            });
+          //VOL-223: Used for determining visibility of each contact type widget
+          can_edit_contact_types: function(crmApi, $route) {
+            if ($route.current.params.projectId == 0) {
+              return false;
+            } else {
+              return crmApi('VolunteerProject', 'getcaneditcontacts', {
+                id: $route.current.params.projectId
+              });
+            }
           }
         }
       });
@@ -66,7 +70,8 @@
   );
 
 
-  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, $route, $injector, crmApi, crmUiAlert, crmUiHelp, countries, project, profile_status, campaigns, relationship_data, supporting_data, location_blocks, volBackbone, userCanGetContactList) {
+
+  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, $route, $injector, crmApi, crmUiAlert, crmUiHelp, countries, project, profile_status, campaigns, relationship_data, supporting_data, location_blocks, volBackbone, can_edit_contact_types) {
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'CRM/Volunteer/Form/Volunteer'}); // See: templates/CRM/volunteer/Project.hlp
@@ -81,8 +86,10 @@
 
     var relationships = {};
     if(project.id == 0) {
-      project = _.extend(supporting_data.values.defaults, project);
-      relationships = supporting_data.values.defaults.relationships;
+      //Cloning these two objects so that their original values aren't subject to data-binding
+      project = _.extend(_.clone(supporting_data.values.defaults), project);
+      relationships = _.clone(supporting_data.values.defaults.relationships);
+
       var originalRelationships = {};
       if (CRM.vars['org.civicrm.volunteer'].entityTable) {
         project.entity_table = CRM.vars['org.civicrm.volunteer'].entityTable;
@@ -93,7 +100,11 @@
       if (CRM.vars['org.civicrm.volunteer'].entityTitle) {
         project.title = CRM.vars['org.civicrm.volunteer'].entityTitle;
       }
+      //VOL-223
+      $scope.editContactType = supporting_data.values.canEditContacts;
     } else {
+      //VOL-223
+      $scope.editContactType = can_edit_contact_types.values;
       $(relationship_data.values).each(function (index, relationship) {
         if (!relationships.hasOwnProperty(relationship.relationship_type_id)) {
           relationships[relationship.relationship_type_id] = [];
@@ -154,7 +165,8 @@
     $scope.project = project;
     $scope.profiles = $scope.project.profiles;
     $scope.relationships = $scope.project.project_contacts;
-    $scope.userCanGetContactList = userCanGetContactList;
+    //VOL-223: Used to determine visibility of relationship block
+    $scope.showRelationshipBlock = _.reduce($scope.editContactType, function(a, b) {return (a || b); });
 
     $scope.refreshLocBlock = function() {
       if (!!$scope.project.loc_block_id) {
