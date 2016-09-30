@@ -30,7 +30,7 @@
     });
   });
 
-  angular.module('volunteer').controller('VolOppsCtrl', function ($route, $scope, $window, $timeout, crmApi, crmStatus, crmUiHelp, volOppSearch, countries, settings, supporting_data) {
+  angular.module('volunteer').controller('VolOppsCtrl', function ($route, $scope, $window, $timeout, crmStatus, crmUiHelp, volOppSearch, countries, settings, supporting_data) {
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'ang/VolOppsCtrl'}); // See: templates/ang/VolOppsCtrl.hlp
@@ -149,16 +149,6 @@
         {start: ts('Searching...'), success: ts('Search complete')},
         volOppSearch.search()
       );
-    };
-
-    $scope.getHosts = function (project) {
-      return crmApi('VolunteerUtil', 'getcountries', {
-        return: ["contact_id.display_name"],
-        project_id: 5,
-        relationship_type_id: "Host Organization"
-      }).then(function(result) {
-        return result.values;
-      });
     };
 
     $scope.showProjectDescription = function (project) {

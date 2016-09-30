@@ -223,7 +223,7 @@ Required vars: volOppData(), searchParams
           </td>
           <td  ng-if="showLocationColumn" class="crm-vol-opp-time">{{formatLocation(need.project.location)}}</td>
           <td class="crm-vol-opp-host">
-            <span class="host" ng-repeat="host in getHosts(need.project)">{{host.contact_id.display_name}}</span>
+            <span class="host" ng-repeat="host in need.project.hosts">{{host['contact_id.display_name']}}</span>
           </td>
           <td class="crm-vol-opp-role">{{need.role_label}}
             <span

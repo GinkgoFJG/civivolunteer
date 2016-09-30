@@ -178,7 +178,7 @@ function civicrm_api3_volunteer_need_getsearchresult($params) {
       ));
       $projectHostCache[$projectId] = $projectHost['values'];
     }
-    $need['host'] = $projectHostCache[$projectId];
+    $need['project']['hosts'] = $projectHostCache[$projectId];
   }
   // end hack for Election Protection Program
   return civicrm_api3_create_success($result, $params, 'VolunteerNeed', 'getsearchresult');
