@@ -115,5 +115,16 @@ return array(
     'description' => 'Show Opportunity Location Column',
     'help_text' => 'When searching for Volunteer Opportunities, display a location column.',
   ),
+  'volunteer_general_project_settings_help_text' => array(
+    'group_name' => 'CiviVolunteer Global Settings',
+    'group' => 'org.civicrm.volunteer',
+    'name' => 'volunteer_general_project_settings_help_text',
+    'type' => 'String',
+    'default' => '',
+    'add' => '4.5',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => 'Help Text for the Project Settings Screen',
+  ),
 
 );
