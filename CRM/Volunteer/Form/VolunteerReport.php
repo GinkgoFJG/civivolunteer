@@ -210,6 +210,7 @@ class CRM_Volunteer_Form_VolunteerReport extends CRM_Report_Form {
           ),
           'status_id' => array(
             'title' => ts('Activity Status', array('domain' => 'org.civicrm.volunteer')),
+            'type' => CRM_Utils_Type::T_STRING,
             'operatorType' => CRM_Report_Form::OP_MULTISELECT,
             'options' => CRM_Core_PseudoConstant::activityStatus(),
           ),
@@ -768,4 +769,3 @@ class CRM_Volunteer_Form_VolunteerReport extends CRM_Report_Form {
     }
   }
 }
-
